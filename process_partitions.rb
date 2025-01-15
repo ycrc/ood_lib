@@ -5,12 +5,7 @@ def updatePartitions(cmd, username, partition_file)
   public_partitions_last = []
 
   hostname = %x(#{"hostname"})
-  if hostname.include?  'farnam'
-    # partitions that will appear before the PI partitions
-    public_partitions_first = ["interactive", "general", "gpu", "gpu_devel", "bigmem"]
-    # partitions that will appear after the PI partitions
-    public_partitions_last = ["scavenge", "scavenge_gpu", "scavenge_cryo"]
-  elsif hostname.include? 'grace'
+  if hostname.include? 'grace'
     # partitions that will appear before the PI partitions
     public_partitions_first = ["devel", "day", "week", "gpu", "gpu_devel", "mpi", "bigmem", "transfer"]
     # partitions that will appear after the PI partitions
@@ -21,6 +16,8 @@ def updatePartitions(cmd, username, partition_file)
   elsif hostname.include? 'mccleary'
     public_partitions_first = ["devel", "day", "week", "gpu", "gpu_devel", "bigmem", "ycga", "transfer"]
     public_partitions_last = ["scavenge_gpu", "scavenge", "future"]
+  elsif hosttname.include? 'bouchet'
+    public_partitions_first = ["devel", "mpi"]
   end
 
 
