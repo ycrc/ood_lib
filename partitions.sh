@@ -1,19 +1,15 @@
 #!/bin/bash
+#export PATH="/usr/bin:/opt/slurm/current/bin"
 
-# add path for sacctmgr and scontrol
-export PATH=/opt/slurm/current/bin:$PATH
-username=$1
+[ "${1}" ] || exit
+username="${1}"
+
+cache="/var/cache/ycrc"
+partcache="${cache}/scontrol.partitions.json"
+assoccache="${cache}/sacctmgr.associations.json"
+
 # get the partition name and TRES value of the private partitions for a specific user
-hostname=$(hostname)
-case $hostname in 
-    *grace*)
-        cmd="for ACCOUNT in $(sacctmgr show user name=$username -s -n -p | cut -d\| -f5 |sort|uniq); do scontrol show partition -o | egrep \$ACCOUNT | cut -d' ' -f1,33; done;"
-	;;
-    *mccleary*)
-	cmd="for ACCOUNT in $(sacctmgr show user name=$username -s -n -p | cut -d\| -f5 |sort|uniq); do scontrol show partition -o | egrep \$ACCOUNT | cut -d' ' -f1,34; done;"
-	;;
-    *milgram*)
-        cmd="for ACCOUNT in $(sacctmgr show user name=$username -s -n -p | cut -d\| -f5 |sort|uniq); do scontrol show partition -o | egrep \$ACCOUNT | cut -d' ' -f1,33; done;"
-	;;
-esac
-eval $cmd
+for account in $(jq -r --arg user "${username}" '.associations[] | select(.id.user == $user).account' < "${assoccache}")
+do
+    jq -r --arg account "${account}" '.partitions[] | select(.accounts.allowed | test("(^|,)" + $account + "(,|$)")) | "PartitionName=" + .name + " TRES=" + .tres.configured' < "${partcache}"
+done
