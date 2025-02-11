@@ -1,4 +1,4 @@
-require "process_partitions.rb"
-
+require "/opt/ood/lib/process_partitions.rb"
+  
 puts "hello world"
-processPartitions("")
+processPartitions("/opt/ood/lib")
