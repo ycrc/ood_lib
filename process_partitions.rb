@@ -4,7 +4,7 @@ def updatePartitions(cmd, username, partition_file)
   public_partitions_first = []
   public_partitions_last = []
 
-  hostname = %x(#{"hostname"})
+  hostname = %x(hostname).strip
   if hostname.include? 'grace'
     # partitions that will appear before the PI partitions
     public_partitions_first = ["devel", "day", "week", "gpu", "gpu_devel", "mpi", "bigmem", "transfer"]
@@ -18,6 +18,9 @@ def updatePartitions(cmd, username, partition_file)
     public_partitions_last = ["scavenge_gpu", "scavenge", "future"]
   elsif hostname.include? 'bouchet'
     public_partitions_first = ["devel", "gpu_devel", "mpi"]
+    public_partitions_last = []
+  elsif hostname.include? 'test'
+    public_partitions_first = ["day"]
     public_partitions_last = []
   end
 
