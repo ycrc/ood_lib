@@ -1,5 +1,5 @@
 def getHostSpecs()
-    hostname = %x(#{"hostname"})
+    hostname = %x(hostname).strip
     host_specs = {'host':'', 'libpath':''}
     if hostname.include? "grace" then
         host_specs[:host] = "Grace"
@@ -15,6 +15,9 @@ def getHostSpecs()
         host_specs[:libpath] = "/gpfs/milgram/apps/services/ood/var_www_ood_apps/lib"
     elsif hostname.include? "bouchet" then
         host_specs[:host] = "Bouchet"
+        host_specs[:libpath] = "/opt/ood/lib"
+    elsif hostname.include? "test" then
+        host_specs[:host] = "Test"
         host_specs[:libpath] = "/opt/ood/lib"
     end
     
